@@ -78,14 +78,30 @@ const App: React.FC = () => {
   const [dailyCount, setDailyCount] = useState<number>(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Initialize Dark Mode
+  // Initialize Theme based on Local Time and User Preference
   useEffect(() => {
-    if (localStorage.theme === 'light') {
+    // 1. 优先读取用户手动保存的设置
+    const storedTheme = localStorage.getItem('theme');
+
+    if (storedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else if (storedTheme === 'light') {
       setIsDarkMode(false);
       document.documentElement.classList.remove('dark');
     } else {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
+      // 2. 如果没有手动保存过，则根据本地时间自动判断（例如：早 6 点到晚 18 点为白天）
+      const currentHour = new Date().getHours();
+      const isNightTime = currentHour >= 18 || currentHour < 6;
+
+      if (isNightTime) {
+        setIsDarkMode(true);
+        document.documentElement.classList.add('dark');
+      } else {
+        // 默认情况（白天）使用亮色主题
+        setIsDarkMode(false);
+        document.documentElement.classList.remove('dark');
+      }
     }
   }, []);
 
