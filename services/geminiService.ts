@@ -186,7 +186,7 @@ HARD RULES
 };
 
 export const generateOutfitVideo = async (imageUrl: string, prompt?: string): Promise<string> => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) throw new Error("API Key not found");
 
   const ai = new GoogleGenAI({ apiKey });
@@ -220,7 +220,7 @@ export const generateOutfitVideo = async (imageUrl: string, prompt?: string): Pr
   while (!operation.done) {
     await new Promise(resolve => setTimeout(resolve, 10000));
     // Re-instantiate to ensure we have the latest API key if it was updated
-    currentApiKey = process.env.API_KEY || apiKey;
+    currentApiKey = import.meta.env.VITE_GEMINI_API_KEY || apiKey;
     if (!currentApiKey) throw new Error("API Key not found during polling");
     const currentAi = new GoogleGenAI({ apiKey: currentApiKey });
     
